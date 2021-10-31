@@ -3,7 +3,17 @@
 Visual Studio eats terabytes of RAM! The repository tries to help you to avoid
 opening that beast, providing some console utilities.
 
-## `asprun`
+## Scripts
+
+###  `asprun`
+
+Download the script with:
+
+```console
+> powershell -c "Invoke-WebRequest -Uri raw.githubusercontent.com/abvalatouski/vsless/master/asprun.bat -Outfile asprun.bat"
+```
+
+Help message:
 
 ```console
 > asprun /?
