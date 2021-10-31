@@ -37,15 +37,13 @@
         exit /b
     ) else if /i "%0" == "/p" (
         if "%1" == "" (
-            echo Expected a port after %0.
-            echo See '%batchfile% /?'.
+            call :argerror "Expected a port after %0."
             exit /b 1
         )
 
         call :isnumber %1
         if errorlevel 1 (
-            echo Expected the port to be a number.
-            echo See '%batchfile% /?'.
+            call :argerror "Expected the port to be a number."
             exit /b 1
         )
 
@@ -55,15 +53,13 @@
         goto :parsearg
     ) else if /i "%0" == "/c" (
         if "%1" == "" (
-            echo Expected a build configuration after %0.
-            echo See '%batchfile% /?'.
+            call :argerror "Expected a build configuration after %0."
             exit /b 1
         )
 
         if not "%1" == "Debug" (
             if not "%1" == "Release" (
-                echo The build configuration can be either Debug or Release.
-                echo See '%batchfile% /?'.
+                call :argerror "The build configuration can be either Debug or Release."
                 exit /b 1
             )
         )
@@ -86,8 +82,7 @@
         goto :parsearg
     ) else if not "%0" == "" (
         if not exist "%0" (
-            echo The folder does not exist.
-            echo See '%batchfile% /?'.
+            call :argerror "The folder does not exist."
             exit /b 1
         )
 
@@ -97,8 +92,7 @@
     )
 
     if "%project%" == "" (
-        echo Name of the project is not defined.
-        echo See '%batchfile% /?'.
+        call :argerror "Name of the project is not defined."
         exit /b 1
     )
 
@@ -177,6 +171,12 @@
     )
 
     exit /b
+)
+
+:argerror (
+    echo %~1
+    echo See '%batchfile% /?'.
+    exit /b 0
 )
 
 :isnumber (
