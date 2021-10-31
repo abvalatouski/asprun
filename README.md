@@ -1,7 +1,7 @@
 # VS-less
 
 Visual Studio eats terabytes of RAM! The repository tries to help you to avoid
-opening that beast, provoding some console utilities.
+opening that beast, providing some console utilities.
 
 ## `asprun`
 
