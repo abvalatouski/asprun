@@ -20,7 +20,7 @@ Runs an ASP.NET project at the specified port and prints its URL.
 The launched process can be stopped via 'taskkill /f /im project.exe',
 if its name matches the name of the project.
 
-    asprun project [/?] [/p port] [/c buildconfig] [/s] [/o]      
+    asprun project [/?] [/p port] [/c buildconfig] [/s] [/o] [/q]
 
 Options
 
@@ -34,6 +34,8 @@ Options
     /s              Print URL of Swagger UI.
 
     /o              Open URL in the browser.
+
+    /q              Disable URL printing.
 
     Options can be placed in any order.
     In case of duplication newer options will override older ones.

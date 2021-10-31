@@ -29,6 +29,7 @@
     set buildconfig=Debug
     set useswagger=0
     set usebrowser=0
+    set quiet=0
 
 :parsearg
     if "%0" == "/?" (
@@ -79,6 +80,10 @@
         set usebrowser=1
         shift
         goto :parsearg
+    ) else if /i = "%0" == "/q" (
+        set quiet=1
+        shift
+        goto :parsearg
     ) else if not "%0" == "" (
         if not exist "%0" (
             echo The folder does not exist.
@@ -110,7 +115,7 @@
     echo The launched process can be stopped via 'taskkill /f /im project.exe',
     echo if its name matches name of the project.
     echo.
-    echo     %batchfile% project [/?] [/p port] [/c buildconfig] [/s] [/o]
+    echo     %batchfile% project [/?] [/p port] [/c buildconfig] [/s] [/o] [/q]
     echo.
     echo Options
     echo.
@@ -127,6 +132,8 @@
     echo     /s              Print URL of Swagger UI.
     echo.
     echo     /o              Open URL in the browser.
+    echo.
+    echo     /q              Disable URL printing.
     echo.
     echo     Options can be placed in any order.
     echo     In case of duplication newer options will override older ones.
@@ -174,7 +181,10 @@
     if "%useswagger%" == "1" (
         set url=%url%/swagger
     )
-    echo %url%
+
+    if "%quiet%" == "0" (
+        echo %url%
+    )
 
     if "%usebrowser%" == "1" (
         start %url%
