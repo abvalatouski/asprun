@@ -7,8 +7,9 @@ opening that beast, provoding some console utilities.
 
 ```console
 > asprun /?
-Runs the ASP.NET project at the specified port and prints its URL.
-The project can be stopped using 'taskkill /f /im project.exe'.   
+Runs an ASP.NET project at the specified port and prints its URL.
+The launched process can be stopped using, 'taskkill /f /im project.exe',
+if its name matched the name of the project.
 
     asprun project [/?] [/p port] [/c buildconfig] [/s] [/o]      
 
