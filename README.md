@@ -15,7 +15,7 @@ powershell -c "Invoke-WebRequest -Uri https://raw.githubusercontent.com/abvalato
 
 Shortened help message:
 
-```console
+```text
 Runs an ASP.NET project at the specified port and prints its URL.
 The launched process can be stopped via 'taskkill /f /im project.exe',
 if its name matches the name of the project.
