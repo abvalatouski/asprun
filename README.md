@@ -10,7 +10,7 @@ opening that beast, providing some console utilities.
 Download the script with:
 
 ```console
-powershell -c "Invoke-WebRequest -Uri https://raw.githubusercontent.com/abvalatouski/vsless/master/asprun.bat -Outfile asprun.bat"
+powershell -c "Invoke-WebRequest -Outfile asprun.bat -Uri https://raw.githubusercontent.com/abvalatouski/vsless/master/asprun.bat"
 ```
 
 Shortened help message:
