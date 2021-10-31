@@ -10,13 +10,12 @@ opening that beast, providing some console utilities.
 Download the script with:
 
 ```console
-> powershell -c "Invoke-WebRequest -Uri https://raw.githubusercontent.com/abvalatouski/vsless/master/asprun.bat -Outfile asprun.bat"
+powershell -c "Invoke-WebRequest -Uri https://raw.githubusercontent.com/abvalatouski/vsless/master/asprun.bat -Outfile asprun.bat"
 ```
 
-Help message:
+Shortened help message:
 
 ```console
-> asprun /?
 Runs an ASP.NET project at the specified port and prints its URL.
 The launched process can be stopped via 'taskkill /f /im project.exe',
 if its name matches the name of the project.
