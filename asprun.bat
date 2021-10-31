@@ -21,9 +21,9 @@
 :main (
     @ echo off
 
-    setlocal
     set batchfile=%0
     shift
+
     set project=
     set port=5001
     set buildconfig=Debug
@@ -102,15 +102,11 @@
         exit /b 1
     )
 
-    call :runproject %project% %port% %buildconfig% %useswagger% %usebrowser%
-    endlocal
+    call :runproject
     exit /b %errorlevel%
 )
 
 :printusage (
-    setlocal
-    set batchfile=%~1
-
     echo Runs the ASP.NET project at the specified port and prints its URL.
     echo The launched process can be stopped via 'taskkill /f /im project.exe',
     echo if its name matches name of the project.
@@ -151,22 +147,13 @@
     echo     See 'https://github.com/abvalatouski/vsless'.
     echo     The source code is licensed under the MIT License.
 
-    endlocal
     exit /b
 )
 
 :runproject (
-    setlocal
-    set project=%~1
-    set port=%~2
-    set buildconfig=%~3
-    set useswagger=%~4
-    set usebrowser=%~5
-
     dotnet build %project% -c %buildconfig% >nul 2>&1
     if errorlevel 1 (
         echo Failed to build. 2>&1
-        endlocal
         exit /b 1
     )
 
@@ -174,7 +161,6 @@
     start /b dotnet run -p %project% -c %buildconfig% -- --urls=%url% >nul 2>&1
     if errorlevel 1 (
         echo Failed to run. 2>&1
-        endlocal
         exit /b 1
     )
 
@@ -190,7 +176,6 @@
         start %url%
     )
 
-    endlocal
     exit /b
 )
 
