@@ -59,7 +59,8 @@ rem IN THE SOFTWARE.
 
         if not "%1" == "Debug" (
             if not "%1" == "Release" (
-                call :argerror "The build configuration can be either Debug or Release."
+                call :argerror^
+                    "The build configuration can be either Debug or Release."
                 exit /b 1
             )
         )
