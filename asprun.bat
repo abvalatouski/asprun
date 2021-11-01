@@ -1,3 +1,5 @@
+@ echo off
+
 rem Copyright © 2021 Aliaksei Valatouski <abvalatouski@gmail.com>
 rem 
 rem Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,8 +21,6 @@ rem FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 rem IN THE SOFTWARE.
 
 :main (
-    @ echo off
-
     set batchfile=%0
     shift
 
