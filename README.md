@@ -41,7 +41,12 @@ Options
     In case of duplication newer options will override older ones.
     Unknown option will be treated as a project path.
 
-Example
+Examples
+
+    mkdir SimpleMvc
+    dotnet new mvc -o SimpleMvc
+    asprun SimpleMvc /o
+    taskkill /f /im SimpleMvc.exe
 
     mkdir WeatherForecast
     dotnet new webapi -o WeatherForecast

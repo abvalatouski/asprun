@@ -132,6 +132,11 @@ rem IN THE SOFTWARE.
     echo.
     echo Example
     echo.
+    echo     mkdir SimpleMvc
+    echo     dotnet new mvc -o SimpleMvc
+    echo     asprun SimpleMvc /o
+    echo     taskkill /f /im SimpleMvc.exe
+    echo.
     echo     mkdir WeatherForecast
     echo     dotnet new webapi -o WeatherForecast
     echo     %batchfile% WeatherForecast /s /o
