@@ -130,7 +130,7 @@ rem IN THE SOFTWARE.
     echo     In case of duplication newer options will override older ones.
     echo     Unknown option will be treated as a project path.
     echo.
-    echo Example
+    echo Examples
     echo.
     echo     mkdir SimpleMvc
     echo     dotnet new mvc -o SimpleMvc
