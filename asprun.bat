@@ -181,7 +181,7 @@ rem IN THE SOFTWARE.
 
 :argerror (
     echo %~1
-    echo See '%batchfile% /?'.
+    echo See '%batchfile% /? ^| more'.
     exit /b 0
 )
 
