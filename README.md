@@ -47,11 +47,9 @@ Examples
 
     mkdir SimpleMvc
     dotnet new mvc -o SimpleMvc
-    asprun SimpleMvc /o
-    taskkill /f /im SimpleMvc.exe
+    asprun SimpleMvc /o /q /w
 
     mkdir WeatherForecast
     dotnet new webapi -o WeatherForecast
-    asprun WeatherForecast /s /o
-    taskkill /f /im WeatherForecast.exe
+    asprun WeatherForecast /s /o /q /w
 ```
