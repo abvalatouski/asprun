@@ -30,6 +30,7 @@ rem IN THE SOFTWARE.
     set useswagger=0
     set usebrowser=0
     set quiet=0
+    set wait=0
 
 :parsearg
     if "%0" == "/?" (
@@ -81,6 +82,10 @@ rem IN THE SOFTWARE.
         set quiet=1
         shift
         goto :parsearg
+    ) else if /i = "%0" == "/w" (
+        set wait=1
+        shift
+        goto :parsearg
     ) else if not "%0" == "" (
         if not exist "%0" (
             call :argerror "The folder does not exist."
@@ -107,6 +112,7 @@ rem IN THE SOFTWARE.
     echo if its name matches name of the project.
     echo.
     echo     %batchfile% project [/?] [/p port] [/c buildconfig] [/s] [/o] [/q]
+    echo         [/w]
     echo.
     echo Options
     echo.
@@ -126,6 +132,8 @@ rem IN THE SOFTWARE.
     echo.
     echo     /q              Disable URL printing.
     echo.
+    echo     /w              Wait pressing any key to stop the project.
+    echo.
     echo     Options can be placed in any order.
     echo     In case of duplication newer options will override older ones.
     echo     Unknown option will be treated as a project path.
@@ -134,13 +142,11 @@ rem IN THE SOFTWARE.
     echo.
     echo     mkdir SimpleMvc
     echo     dotnet new mvc -o SimpleMvc
-    echo     asprun SimpleMvc /o
-    echo     taskkill /f /im SimpleMvc.exe
+    echo     asprun SimpleMvc /o /q /w
     echo.
     echo     mkdir WeatherForecast
     echo     dotnet new webapi -o WeatherForecast
-    echo     %batchfile% WeatherForecast /s /o
-    echo     taskkill /f /im WeatherForecast.exe
+    echo     %batchfile% WeatherForecast /s /o /q /w
     echo.
     echo Source Code
     echo.
@@ -174,6 +180,14 @@ rem IN THE SOFTWARE.
 
     if "%usebrowser%" == "1" (
         start %url%
+    )
+
+    if "%wait%" == "1" (
+        echo Press any key to stop the execution...
+        pause >nul
+        for /f %%f in ('dir %project%\bin /b /s ^| findstr ".exe"') do (
+            taskkill /f /im %%~nxf >nul
+        )
     )
 
     exit /b

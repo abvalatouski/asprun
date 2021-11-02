@@ -20,7 +20,7 @@ Runs an ASP.NET project at the specified port and prints its URL.
 The launched process can be stopped via 'taskkill /f /im project.exe',
 if its name matches name of the project.
 
-    asprun project [/?] [/p port] [/c buildconfig] [/s] [/o] [/q]
+    asprun project [/?] [/p port] [/c buildconfig] [/s] [/o] [/q] [/w]
 
 Options
 
@@ -36,6 +36,8 @@ Options
     /o              Open URL in the browser.
 
     /q              Disable URL printing.
+
+    /w              Wait pressing any key to stop the project.
 
     Options can be placed in any order.
     In case of duplication newer options will override older ones.
