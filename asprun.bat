@@ -144,7 +144,7 @@ rem IN THE SOFTWARE.
     echo     asprun SimpleMvc /o /q /w
     echo.
     echo     dotnet new webapi -o WeatherForecast
-    echo     %batchfile% WeatherForecast /s /o /q /w
+    echo     %batchfile% WeatherForecast /o /p /q /w
     echo.
     echo Source Code
     echo.
