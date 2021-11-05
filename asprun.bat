@@ -164,13 +164,14 @@ rem IN THE SOFTWARE.
     )
 
     set url=https://localhost:%port%
-    start /b dotnet run 2>nul^
+    start /b dotnet run^
         --project=%project%^
         --configuration=%buildconfig%^
         --no-build^
         --^
         --urls=%url%^
         --Logging:LogLevel:Microsoft.Hosting.Lifetime=None
+    rem That thing may handle errors from both `dotnet` and the application.
     if errorlevel 1 (
         echo Failed to run. >&2
         exit /b 1
