@@ -122,30 +122,30 @@ rem IN THE SOFTWARE.
     echo The launched process can be stopped via 'taskkill /f /im project.exe',
     echo if its name matches name of the project.
     echo.
-    echo     %~n1 project [/?] [/c buildconfig] [/h hosturl] [/o] [/p port] [/q]
-    echo         [/s] [/w]
+    echo     %~n1 project [/?] [/c buildconfig] [/h hostname|hostip] [/o]
+    echo         [/p port] [/q] [/s] [/w]
     echo.
     echo Options
     echo.
-    echo     project         Path to the project's folder.
+    echo     project              Path to the project's folder.
     echo.
-    echo.    /?              Show this help message.
-    echo                     Other options will be ignored.
+    echo.    /?                   Show this help message.
+    echo                          Other options will be ignored.
     echo.
-    echo     /c buildconfig  Either Debug or Release.
-    echo                     Defaulted to "%buildconfig%".
+    echo     /c buildconfig       Either Debug or Release.
+    echo                          Defaulted to "%buildconfig%".
     echo.
-    echo     /h hosturl      Defaulted to "localhost".
+    echo     /h hostname|hostip   Defaulted to "localhost" ("127.0.0.1").
     echo.
-    echo     /o              Open URL in the browser.
+    echo     /o                   Open URL in the browser.
     echo.
-    echo     /p port         Defaulted to "%port%".
+    echo     /p port              Defaulted to "%port%".
     echo.
-    echo     /q              Disable URL printing.
+    echo     /q                   Disable URL printing.
     echo.
-    echo     /s              Print URL of Swagger UI.
+    echo     /s                   Print URL of Swagger UI.
     echo.
-    echo     /w              Wait pressing any key to stop the project.
+    echo     /w                   Wait pressing any key to stop the project.
     echo.
     echo     Options can be placed in any order.
     echo     In case of duplication newer options will override older ones.
