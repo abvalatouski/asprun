@@ -21,11 +21,12 @@ rem FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 rem IN THE SOFTWARE.
 
 :main (
-    set batchfile=%0
+    set command=%0
     shift
 
     set project=
     set port=5001
+    set host=localhost
     set buildconfig=Debug
     set useswagger=0
     set usebrowser=0
@@ -34,7 +35,7 @@ rem IN THE SOFTWARE.
 
 :parsearg
     if "%0" == "/?" (
-        call :printusage %batchfile%
+        call :usage %command%
         exit /b
     ) else if /i "%0" == "/p" (
         if "%1" == "" (
@@ -49,6 +50,16 @@ rem IN THE SOFTWARE.
         )
 
         set port=%1
+        shift
+        shift
+        goto :parsearg
+    ) else if /i "%0" == "/h" (
+        if "%1" == "" (
+            call :argerror "Expected a host URL after %0."
+            exit /b 1
+        )
+
+        set host=%1
         shift
         shift
         goto :parsearg
@@ -106,13 +117,13 @@ rem IN THE SOFTWARE.
     exit /b %errorlevel%
 )
 
-:printusage (
+:usage (
     echo Runs the ASP.NET project at the specified port and prints its URL.
     echo The launched process can be stopped via 'taskkill /f /im project.exe',
     echo if its name matches name of the project.
     echo.
-    echo     %batchfile% project [/?] [/c buildconfig] [/o] [/p port] [/q] [/s]
-    echo         [/w]
+    echo     %~n1 project [/?] [/c buildconfig] [/h hosturl] [/o] [/p port] [/q]
+    echo         [/s] [/w]
     echo.
     echo Options
     echo.
@@ -122,11 +133,13 @@ rem IN THE SOFTWARE.
     echo                     Other options will be ignored.
     echo.
     echo     /c buildconfig  Either Debug or Release.
-    echo                     Defaulted to %buildconfig%.
+    echo                     Defaulted to "%buildconfig%".
+    echo.
+    echo     /h hosturl      Defaulted to "localhost".
     echo.
     echo     /o              Open URL in the browser.
     echo.
-    echo     /p port         Defaulted to %port%.
+    echo     /p port         Defaulted to "%port%".
     echo.
     echo     /q              Disable URL printing.
     echo.
@@ -141,15 +154,18 @@ rem IN THE SOFTWARE.
     echo Examples
     echo.
     echo     dotnet new mvc -o SimpleMvc
-    echo     asprun SimpleMvc /o /q /w
+    echo     %~n1 SimpleMvc /o /q /w
     echo.
     echo     dotnet new webapi -o WeatherForecast
-    echo     %batchfile% WeatherForecast /o /p /q /w
+    echo     %~n1 WeatherForecast /o /q /s /w
     echo.
     echo Source Code
     echo.
-    echo     See 'https://github.com/abvalatouski/vsless'.
+    echo.    Written by Aliaksei Valatouski ^<abvalatouski@gmail.com^>.
     echo     The source code is licensed under the MIT License.
+    echo.
+    echo     See 'type %~f1'
+    echo     or 'https://github.com/abvalatouski/vsless'.
 
     exit /b
 )
@@ -161,7 +177,7 @@ rem IN THE SOFTWARE.
         exit /b 1
     )
 
-    set url=https://localhost:%port%
+    set url=https://%host%:%port%
     start /b dotnet run^
         --project=%project%^
         --configuration=%buildconfig%^
