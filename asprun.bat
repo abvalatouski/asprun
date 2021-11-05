@@ -111,7 +111,7 @@ rem IN THE SOFTWARE.
     echo The launched process can be stopped via 'taskkill /f /im project.exe',
     echo if its name matches name of the project.
     echo.
-    echo     %batchfile% project [/?] [/p port] [/c buildconfig] [/s] [/o] [/q]
+    echo     %batchfile% project [/?] [/c buildconfig] [/o] [/p port] [/q] [/s]
     echo         [/w]
     echo.
     echo Options
@@ -121,16 +121,16 @@ rem IN THE SOFTWARE.
     echo.    /?              Show this help message.
     echo                     Other options will be ignored.
     echo.
-    echo     /p port         Defaulted to %port%.
-    echo.
     echo     /c buildconfig  Either Debug or Release.
     echo                     Defaulted to %buildconfig%.
     echo.
-    echo     /s              Print URL of Swagger UI.
-    echo.
     echo     /o              Open URL in the browser.
     echo.
+    echo     /p port         Defaulted to %port%.
+    echo.
     echo     /q              Disable URL printing.
+    echo.
+    echo     /s              Print URL of Swagger UI.
     echo.
     echo     /w              Wait pressing any key to stop the project.
     echo.
