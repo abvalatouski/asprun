@@ -170,6 +170,9 @@ rem IN THE SOFTWARE.
         exit /b 1
     )
 
+    rem Waiting the application to startup.
+    timeout 1 >nul
+
     if "%useswagger%" == "1" (
         set url=%url%/swagger
     )
@@ -186,7 +189,7 @@ rem IN THE SOFTWARE.
         echo Press any key to stop the execution...
         pause >nul
         for /f %%f in ('dir %project%\bin /b /s ^| findstr ".exe"') do (
-            taskkill /f /im %%~nxf >nul
+            taskkill /f /im %%~nf.exe >nul
         )
     )
 
