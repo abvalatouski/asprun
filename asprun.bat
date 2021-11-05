@@ -21,7 +21,7 @@ rem FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 rem IN THE SOFTWARE.
 
 :main (
-    set command=%0
+    set command=%~f0
     shift
 
     set project=
@@ -153,11 +153,11 @@ rem IN THE SOFTWARE.
     echo.
     echo Examples
     echo.
-    echo     dotnet new mvc -o SimpleMvc
-    echo     %~n1 SimpleMvc /o /q /w
+    echo     ^> dotnet new mvc -o SimpleMvc
+    echo     ^> %~n1 SimpleMvc /o /q /w
     echo.
-    echo     dotnet new webapi -o WeatherForecast
-    echo     %~n1 WeatherForecast /o /q /s /w
+    echo     ^> dotnet new webapi -o WeatherForecast
+    echo     ^> %~n1 WeatherForecast /o /q /s /w
     echo.
     echo Source Code
     echo.
