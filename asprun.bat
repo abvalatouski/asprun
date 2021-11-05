@@ -122,7 +122,7 @@ rem IN THE SOFTWARE.
     echo The launched process can be stopped via 'taskkill /f /im project.exe',
     echo if its name matches name of the project.
     echo.
-    echo     %~n1 project [/?] [/c buildconfig] [/h hostname|hostip] [/o]
+    echo     %~n1 project [/?] [/c buildconfig] [/h hostname^|hostip] [/o]
     echo         [/p port] [/q] [/s] [/w]
     echo.
     echo Options
@@ -135,7 +135,7 @@ rem IN THE SOFTWARE.
     echo     /c buildconfig       Either Debug or Release.
     echo                          Defaulted to "%buildconfig%".
     echo.
-    echo     /h hostname|hostip   Defaulted to "localhost" ("127.0.0.1").
+    echo     /h hostname^|hostip   Defaulted to "localhost" ("127.0.0.1").
     echo.
     echo     /o                   Open URL in the browser.
     echo.
