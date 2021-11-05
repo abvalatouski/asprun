@@ -164,12 +164,12 @@ rem IN THE SOFTWARE.
     )
 
     set url=https://localhost:%port%
-    start /b dotnet run^
+    start /b dotnet run 2>nul^
         --project=%project%^
         --configuration=%buildconfig%^
         --no-build^
         --^
-        --urls=%url% 2>nul^
+        --urls=%url%^
         --Logging:LogLevel:Microsoft.Hosting.Lifetime=None
     if errorlevel 1 (
         echo Failed to run. 2>&1
