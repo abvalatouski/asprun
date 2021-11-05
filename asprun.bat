@@ -140,11 +140,9 @@ rem IN THE SOFTWARE.
     echo.
     echo Examples
     echo.
-    echo     mkdir SimpleMvc
     echo     dotnet new mvc -o SimpleMvc
     echo     asprun SimpleMvc /o /q /w
     echo.
-    echo     mkdir WeatherForecast
     echo     dotnet new webapi -o WeatherForecast
     echo     %batchfile% WeatherForecast /s /o /q /w
     echo.
