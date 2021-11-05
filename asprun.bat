@@ -157,7 +157,7 @@ rem IN THE SOFTWARE.
 )
 
 :runproject (
-    dotnet build %project% -c %buildconfig% >nul 2>&1
+    dotnet build %project% --configuration=%buildconfig% >nul 2>&1
     if errorlevel 1 (
         echo Failed to build. 2>&1
         exit /b 1
@@ -165,8 +165,8 @@ rem IN THE SOFTWARE.
 
     set url=https://localhost:%port%
     start /b dotnet run^
-        -p %project%^
-        -c %buildconfig%^
+        --project=%project%^
+        --configuration=%buildconfig%^
         --no-build^
         --^
         --urls=%url% 2>nul^
