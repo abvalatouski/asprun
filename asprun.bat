@@ -26,6 +26,7 @@ rem IN THE SOFTWARE.
 
     set project=
     set port=5001
+    set protocol=https
     set host=localhost
     set buildconfig=Debug
     set useswagger=0
@@ -97,6 +98,10 @@ rem IN THE SOFTWARE.
         set wait=1
         shift
         goto :parsearg
+    ) else if /i = "%0" == "/i" (
+        set protocol=http
+        shift
+        goto :parsearg
     ) else if not "%0" == "" (
         if not exist "%0" (
             call :argerror "The folder does not exist."
@@ -122,7 +127,7 @@ rem IN THE SOFTWARE.
     echo The launched process can be stopped via 'taskkill /f /im project.exe',
     echo if its name matches name of the project.
     echo.
-    echo     %~n1 project [/?] [/c buildconfig] [/h hostname^|hostip] [/o]
+    echo     %~n1 project [/?] [/c buildconfig] [/h hostname^|hostip] [/i] [/o]
     echo         [/p port] [/q] [/s] [/w]
     echo.
     echo Options
@@ -137,11 +142,17 @@ rem IN THE SOFTWARE.
     echo.
     echo     /h hostname^|hostip   Defaulted to "localhost" ("127.0.0.1").
     echo.
+    echo     /i                   Use HTTP instead of HTTPS.
+    echo                          ===================
+    echo                          Mnemonic: insecure.
+    echo.
     echo     /o                   Open URL in the browser.
     echo.
     echo     /p port              Defaulted to "%port%".
     echo.
     echo     /q                   Disable URL printing.
+    echo                          ================
+    echo                          Mnemonic: quiet.
     echo.
     echo     /s                   Print URL of Swagger UI.
     echo.
@@ -158,6 +169,20 @@ rem IN THE SOFTWARE.
     echo.
     echo     ^> dotnet new webapi -o WeatherForecast
     echo     ^> %~n1 WeatherForecast /o /q /s /w
+    echo.
+    echo     ^> dotnet new webapi -o WeatherForecast
+    echo     ^> rem Obtain IP of your local network.
+    echo     ^> rem See 'ipconfig' to choose an appropriate IP number.
+    echo     ^> set ipnumber=2
+    echo     ^> for /f "tokens=3,4,5,6 delims=.: " %%%%a in (
+    echo     ^>     'ipconfig^^
+    echo     ^>         ^^^| findstr "IPv4"^^
+    echo     ^>         ^^^| findstr /n ".*"^^
+    echo     ^>         ^^^| findstr "^^%%ipnumber%%"'
+    echo     ^> ) do (
+    echo     ^>    set hostip=%%%%a.%%%%b.%%%%c.%%%%d
+    echo     ^> )
+    echo     ^> %~n1 WeatherForecast /h %%hostip%% /i /p 80 /q
     echo.
     echo Source Code
     echo.
@@ -177,7 +202,7 @@ rem IN THE SOFTWARE.
         exit /b 1
     )
 
-    set url=https://%host%:%port%
+    set url=%protocol%://%host%:%port%
     start /b dotnet run^
         --project=%project%^
         --configuration=%buildconfig%^
