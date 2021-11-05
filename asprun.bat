@@ -159,7 +159,7 @@ rem IN THE SOFTWARE.
 :runproject (
     dotnet build %project% --configuration=%buildconfig% >nul 2>&1
     if errorlevel 1 (
-        echo Failed to build. 2>&1
+        echo Failed to build. >&2
         exit /b 1
     )
 
@@ -172,7 +172,7 @@ rem IN THE SOFTWARE.
         --urls=%url%^
         --Logging:LogLevel:Microsoft.Hosting.Lifetime=None
     if errorlevel 1 (
-        echo Failed to run. 2>&1
+        echo Failed to run. >&2
         exit /b 1
     )
 
@@ -203,8 +203,8 @@ rem IN THE SOFTWARE.
 )
 
 :argerror (
-    echo %~1
-    echo See '%batchfile% /? ^| more'.
+    echo %~1 >&2
+    echo See '%batchfile% /? ^| more'. >&2
     exit /b 0
 )
 
