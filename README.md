@@ -63,7 +63,7 @@ Examples
 
     > dotnet new webapi -o WeatherForecast
     > rem See 'ipconfig' to find IP of your local network.
-    > asprun WeatherForecast /h %2 /i /p 80 /s
+    > asprun WeatherForecast /h %-1 /i /p 80 /s
     http://192.168.x.x:80/swagger
     > rem Connect another device to the local network an try to open that
     > rem link.
