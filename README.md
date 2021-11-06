@@ -23,7 +23,7 @@ Options
     /c build-configuration  Either Debug or Release.
                             Defaulted to "Debug".
 
-    /h host                 Can be either host name, host IP, or '%%n',
+    /h host                 Can be either host name, host IP, or '%n',
                             where number 'n' refers to nth IPv4 from 'ipconfig'.
                             See 'ipconfig | findstr "IPv4" | findstr /n ".*"'.
                             Defaulted to "localhost" (same as "127.0.0.1").
