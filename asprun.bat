@@ -29,7 +29,6 @@ rem IN THE SOFTWARE.
   set project=
   set build-configuration=Debug
   set host=localhost
-  set use-ip-number=0
   set protocol=https
   set use-browser=0
   set port=5001
