@@ -35,112 +35,8 @@ rem IN THE SOFTWARE.
     set quiet=0
     set use-swagger-ui=0
     set wait=0
-
-:parse-option
-    if "%0" == "/?" (
-        call :usage %command%
-        endlocal
-        exit /b
-    ) else if /i "%0" == "/c" (
-        if "%1" == "" (
-            call :option-error^
-                %command%^
-                "Expected a build configuration after %0."
-            endlocal
-            exit /b 1
-        )
-
-        if not "%1" == "Debug" (
-            if not "%1" == "Release" (
-                call :option-error^
-                    %command%^
-                    "The build configuration can be either Debug or Release."
-                endlocal
-                exit /b 1
-            )
-        )
-
-        set build-configuration=%1
-        shift
-        shift
-        goto :parse-option
-    ) else if /i "%0" == "/h" (
-        if "%1" == "" (
-            call :option-error^
-                %command%^
-                "Expected a host URL after %0."
-            endlocal
-            exit /b 1
-        )
-
-        set host=%1
-        if "!host:~0,1!" == "%%" (
-            call :lookup-ip-config "!host:~1!"
-            if not "!errorlevel!" == "0" (
-                >&2 echo 'ipconfig' does not provide an IPv4 with number '!host:~1!'.
-                >&2 echo See 'ipconfig ^| findstr "IPv4" ^| findstr /n ".*"'.
-                endlocal
-                exit /b 1
-            )
-        )
-
-        shift
-        shift
-        goto :parse-option
-    ) else if /i = "%0" == "/i" (
-        set protocol=http
-        shift
-        goto :parse-option
-    ) else if /i "%0" == "/o" (
-        set use-browser=1
-        shift
-        goto :parse-option
-    ) else if /i "%0" == "/p" (
-        if "%1" == "" (
-            call :option-error^
-                %command%^
-                "Expected a port after %0."
-            endlocal
-            exit /b 1
-        )
-
-        set port=%1
-        shift
-        shift
-        goto :parse-option
-    ) else if /i = "%0" == "/q" (
-        set quiet=1
-        shift
-        goto :parse-option
-    ) else if /i "%0" == "/s" (
-        set use-swagger-ui=1
-        shift
-        goto :parse-option
-    ) else if /i = "%0" == "/w" (
-        set wait=1
-        shift
-        goto :parse-option
-    ) else if not "%0" == "" (
-        if not exist "%0" (
-            call :option-error^
-                %command%^
-                "The project folder '%0' does not exist."
-            endlocal
-            exit /b 1
-    )   
-
-        set project=%0
-        shift
-        goto :parse-option
-    )
-
-    if "%project%" == "" (
-        call :option-error^
-            %command%^
-            "Name of the project is not defined."
-        endlocal
-        exit /b 1
-    )
+    goto :parse-options
+:options-were-parsed
 
     call :run-project
     endlocal
@@ -218,6 +114,115 @@ rem IN THE SOFTWARE.
     echo     or 'https://github.com/abvalatouski/vsless'.
 
     exit /b
+)
+
+:parse-options (
+    if "%0" == "/?" (
+        call :usage %command%
+        endlocal
+        exit /b
+    ) else if /i "%0" == "/c" (
+        if "%1" == "" (
+            call :option-error^
+                %command%^
+                "Expected a build configuration after %0."
+            endlocal
+            exit /b 1
+        )
+
+        if not "%1" == "Debug" (
+            if not "%1" == "Release" (
+                call :option-error^
+                    %command%^
+                    "The build configuration can be either Debug or Release."
+                endlocal
+                exit /b 1
+            )
+        )
+
+        set build-configuration=%1
+        shift
+        shift
+        goto :parse-options
+    ) else if /i "%0" == "/h" (
+        if "%1" == "" (
+            call :option-error^
+                %command%^
+                "Expected a host URL after %0."
+            endlocal
+            exit /b 1
+        )
+
+        set host=%1
+        if "!host:~0,1!" == "%%" (
+            call :lookup-ip-config "!host:~1!"
+            if not "!errorlevel!" == "0" (
+                >&2 echo 'ipconfig' does not provide an IPv4 with number '!host:~1!'.
+                >&2 echo See 'ipconfig ^| findstr "IPv4" ^| findstr /n ".*"'.
+                endlocal
+                exit /b 1
+            )
+        )
+
+        shift
+        shift
+        goto :parse-options
+    ) else if /i = "%0" == "/i" (
+        set protocol=http
+        shift
+        goto :parse-options
+    ) else if /i "%0" == "/o" (
+        set use-browser=1
+        shift
+        goto :parse-options
+    ) else if /i "%0" == "/p" (
+        if "%1" == "" (
+            call :option-error^
+                %command%^
+                "Expected a port after %0."
+            endlocal
+            exit /b 1
+        )
+
+        set port=%1
+        shift
+        shift
+        goto :parse-options
+    ) else if /i = "%0" == "/q" (
+        set quiet=1
+        shift
+        goto :parse-options
+    ) else if /i "%0" == "/s" (
+        set use-swagger-ui=1
+        shift
+        goto :parse-options
+    ) else if /i = "%0" == "/w" (
+        set wait=1
+        shift
+        goto :parse-options
+    ) else if not "%0" == "" (
+        if not exist "%0" (
+            call :option-error^
+                %command%^
+                "The project folder '%0' does not exist."
+            endlocal
+            exit /b 1
+        )   
+
+        set project=%0
+        shift
+        goto :parse-options
+    )
+
+    if "%project%" == "" (
+        call :option-error^
+            %command%^
+            "Name of the project is not defined."
+        endlocal
+        exit /b 1
+    )
+
+    goto :options-were-parsed
 )
 
 :run-project (
