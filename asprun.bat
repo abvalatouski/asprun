@@ -223,7 +223,9 @@ rem IN THE SOFTWARE.
 
 :run-project (
   call :build-project
-  exit /b 1
+  if not "%errorlevel%" == "0" (
+    exit /b 1
+  )
 
   set url=%protocol%://!host!:%port%
   start /b dotnet run^
@@ -233,14 +235,6 @@ rem IN THE SOFTWARE.
     --^
     --urls=%url%^
     --Logging:LogLevel:Microsoft.Hosting.Lifetime=None
-  rem That thing may handle errors from both `dotnet` and the application.
-  if errorlevel 1 (
-    >&2 echo Failed to run.
-    exit /b 1
-  )
-
-  rem Waiting the application to startup.
-  >nul timeout 1
 
   if "%use-swagger-ui%" == "1" (
     set url=%url%/swagger
