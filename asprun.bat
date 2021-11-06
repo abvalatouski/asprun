@@ -22,22 +22,8 @@ rem IN THE SOFTWARE.
 
 :main (
     setlocal enabledelayedexpansion
-
-    set command=%~f0
-    shift
-
-    set project=
-    set build-configuration=Debug
-    set host=localhost
-    set protocol=https
-    set use-browser=0
-    set port=5001
-    set quiet=0
-    set use-swagger-ui=0
-    set wait=0
     goto :parse-options
 :options-were-parsed
-
     call :run-project
     endlocal
     exit /b %errorlevel%
@@ -82,9 +68,9 @@ rem IN THE SOFTWARE.
     echo.
     echo     /w                      Wait pressing any key to stop the project.
     echo.
-    echo   Options can be placed in any order.
-    echo   In case of duplication newer options will override older ones.
-    echo   Unknown option will be treated as a project path.
+    echo     Options can be placed in any order.
+    echo     In case of duplication newer options will override older ones.
+    echo     Unknown option will be treated as a project path.
     echo.
     echo Examples
     echo.
@@ -117,6 +103,20 @@ rem IN THE SOFTWARE.
 )
 
 :parse-options (
+    set command=%~f0
+    shift
+
+    set project=
+    set build-configuration=Debug
+    set host=localhost
+    set protocol=https
+    set use-browser=0
+    set port=5001
+    set quiet=0
+    set use-swagger-ui=0
+    set wait=0
+
+:parse-option
     if "%0" == "/?" (
         call :usage %command%
         endlocal
@@ -143,12 +143,12 @@ rem IN THE SOFTWARE.
         set build-configuration=%1
         shift
         shift
-        goto :parse-options
+        goto :parse-option
     ) else if /i "%0" == "/h" (
         if "%1" == "" (
             call :option-error^
                 %command%^
-                "Expected a host URL after %0."
+                "Expected a host after %0."
             endlocal
             exit /b 1
         )
@@ -166,15 +166,15 @@ rem IN THE SOFTWARE.
 
         shift
         shift
-        goto :parse-options
+        goto :parse-option
     ) else if /i = "%0" == "/i" (
         set protocol=http
         shift
-        goto :parse-options
+        goto :parse-option
     ) else if /i "%0" == "/o" (
         set use-browser=1
         shift
-        goto :parse-options
+        goto :parse-option
     ) else if /i "%0" == "/p" (
         if "%1" == "" (
             call :option-error^
@@ -187,19 +187,19 @@ rem IN THE SOFTWARE.
         set port=%1
         shift
         shift
-        goto :parse-options
+        goto :parse-option
     ) else if /i = "%0" == "/q" (
         set quiet=1
         shift
-        goto :parse-options
+        goto :parse-option
     ) else if /i "%0" == "/s" (
         set use-swagger-ui=1
         shift
-        goto :parse-options
+        goto :parse-option
     ) else if /i = "%0" == "/w" (
         set wait=1
         shift
-        goto :parse-options
+        goto :parse-option
     ) else if not "%0" == "" (
         if not exist "%0" (
             call :option-error^
@@ -211,7 +211,7 @@ rem IN THE SOFTWARE.
 
         set project=%0
         shift
-        goto :parse-options
+        goto :parse-option
     )
 
     if "%project%" == "" (
@@ -225,9 +225,15 @@ rem IN THE SOFTWARE.
     goto :options-were-parsed
 )
 
+:option-error (
+    >&2 echo %~2
+    >&2 echo See '%~n1 /? ^| more'.
+    exit /b 0
+)
+
 :run-project (
     call :build-project
-    if not "%errorlevel%" == "0" (
+    if not errorlevel 0 (
         exit /b 1
     ) 
 
@@ -264,7 +270,6 @@ rem IN THE SOFTWARE.
 )
 
 :build-project (
-    setlocal
     set has-errors=0
 
     for /f "tokens=*" %%a in (
@@ -314,14 +319,7 @@ rem IN THE SOFTWARE.
         )
     )
 
-    endlocal
     exit /b %has-errors%
-)
-
-:option-error (
-    >&2 echo %~2
-    >&2 echo See '%~n1 /? ^| more'.
-    exit /b 0
 )
 
 :lookup-ip-config (
