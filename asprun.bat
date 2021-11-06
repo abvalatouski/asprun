@@ -240,7 +240,7 @@ rem IN THE SOFTWARE.
 :option-error (
     >&2 echo %~2
     >&2 echo See '%~n1 /? ^| more'.
-    exit /b 0
+    exit /b
 )
 
 :run-project (
