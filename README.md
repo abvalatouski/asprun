@@ -16,40 +16,61 @@ powershell -c "Invoke-WebRequest -Outfile asprun.bat -Uri https://raw.githubuser
 Shortened help message:
 
 ```text
-Runs an ASP.NET project at the specified port and prints its URL.
+Runs the ASP.NET project at the specified port and prints its URL.
 The launched process can be stopped via 'taskkill /f /im project.exe',
 if its name matches name of the project.
 
-    asprun project [/?] [/p port] [/c buildconfig] [/s] [/o] [/q] [/w]
+  asprun project [/?] [/c build-configuration] [/h host] [/i] [/o] [/p port]
+    [/q] [/s] [/w]
 
 Options
 
-    project         Path to the project's folder. 
+  project                 Path to the project's folder.
 
-    /p port         Defaulted to 5001.      
+  /c build-configuration  Either Debug or Release.
+                          Defaulted to "Debug".
 
-    /c buildconfig  Either Debug or Release.
-                    Defaulted to Debug.     
+  /h host                 Can be either host name, host IP, or '%%n',
+                          where number 'n' refers to nth IPv4 from 'ipconfig'.
+                          See 'ipconfig | findstr "IPv4" | findstr /n ".*"'.
+                          Defaulted to "localhost" (same as "127.0.0.1").
 
-    /s              Print URL of Swagger UI.
+  /i                      Use HTTP instead of HTTPS.
+                          ===================
+                          Mnemonic: insecure.
 
-    /o              Open URL in the browser.
+  /o                      Open URL in the browser.
 
-    /q              Disable URL printing.
+  /p port                 Defaulted to "5001".
 
-    /w              Wait pressing any key to stop the project.
+  /q                      Disable URL printing.
+                          ================
+                          Mnemonic: quiet.
 
-    Options can be placed in any order.
-    In case of duplication newer options will override older ones.
-    Unknown option will be treated as a project path.
+  /s                      Print URL of Swagger UI.
+
+  /w                      Wait pressing any key to stop the project.
+
+  Options can be placed in any order.
+  In case of duplication newer options will override older ones.
+  Unknown option will be treated as a project path.
 
 Examples
 
-    mkdir SimpleMvc
-    dotnet new mvc -o SimpleMvc
-    asprun SimpleMvc /o /q /w
+  > dotnet new mvc -o SimpleMvc
+  > asprun SimpleMvc /o /q
+  > taskkill /f /im SimpleMvc.exe
 
-    mkdir WeatherForecast
-    dotnet new webapi -o WeatherForecast
-    asprun WeatherForecast /s /o /q /w
+  > dotnet new webapi -o WeatherForecast
+  > asprun WeatherForecast /o /q /s /w
+  Press any key to stop the execution...
+  >
+
+  > dotnet new webapi -o WeatherForecast
+  > rem See 'ipconfig' to find IP of your local network.
+  > asprun WeatherForecast /h %2 /i /p 80 /s
+  http://192.168.x.x:80/swagger
+  > rem Connect another device to the local network an try to open that
+  > rem link.
+  > taskkill /f /im WeatherForecast.exe
 ```
