@@ -167,7 +167,7 @@ rem IN THE SOFTWARE.
   echo                           Defaulted to "%build-configuration%".
   echo.
   echo   /h host                 Can be either host name, host IP, or '%%%%n',
-  echo                           where number 'n' refers to an IPv4 from 'ipconfig'.
+  echo                           where number 'n' refers to nth IPv4 from 'ipconfig'.
   echo                           See 'ipconfig ^| findstr "IPv4" ^| findstr /n ".*"'.
   echo                           Defaulted to "localhost" (same as "127.0.0.1").
   echo.
