@@ -49,6 +49,8 @@ rem IN THE SOFTWARE.
     echo.
     echo     /h host                 Can be either host name, host IP, or '%%n',
     echo                             where number 'n' refers to nth IPv4 from 'ipconfig'.
+    echo                             In case of negative 'n' IPs will be peaked,
+    echo                             starting from the end.
     echo                             See 'ipconfig ^| findstr "IPv4" ^| findstr /n ".*"'.
     echo                             Defaulted to "localhost" (same as "127.0.0.1").
     echo.
@@ -85,7 +87,7 @@ rem IN THE SOFTWARE.
     echo.
     echo     ^> dotnet new webapi -o WeatherForecast
     echo     ^> rem See 'ipconfig' to find IP of your local network.
-    echo     ^> %~n1 WeatherForecast /h %%2 /i /p 80 /s
+    echo     ^> %~n1 WeatherForecast /h %%-1 /i /p 80 /s
     echo     http://192.168.x.x:80/swagger
     echo     ^> rem Connect another device to the local network an try to open that
     echo     ^> rem link.
@@ -155,7 +157,14 @@ rem IN THE SOFTWARE.
 
         set host=%1
         if "!host:~0,1!" == "%%" (
-            call :lookup-ip-config "!host:~1!"
+            if not "!host:~1,1!" == "-" (
+                set reversed-search=0
+                call :lookup-ip-config !reversed-search! "!host:~1!"
+            ) else (
+                set reversed-search=1
+                call :lookup-ip-config !reversed-search! "!host:~2!"
+            )
+
             if not "!errorlevel!" == "0" (
                 >&2 echo 'ipconfig' does not provide an IPv4 with number '!host:~1!'.
                 >&2 echo See 'ipconfig ^| findstr "IPv4" ^| findstr /n ".*"'.
@@ -163,6 +172,9 @@ rem IN THE SOFTWARE.
                 exit /b 1
             )
         )
+
+        echo !host!
+        exit /b 1
 
         shift
         shift
@@ -324,14 +336,29 @@ rem IN THE SOFTWARE.
 
 :lookup-ip-config (
     set no-ip=1
-    for /f "tokens=3,4,5,6 delims=.: " %%a in (
-        'ipconfig^
-            ^| findstr "IPv4"^
-            ^| findstr /n ".*"^
-            ^| findstr "^%~1"'
-    ) do (
-        set host=%%a.%%b.%%c.%%d
-        set no-ip=0
+
+    if "%~1" == "0" (
+        for /f "tokens=3,4,5,6 delims=.: " %%a in (
+            'ipconfig^
+                ^| findstr "IPv4"^
+                ^| findstr /n ".*"^
+                ^| findstr "^%~2"'
+        ) do (
+            set host=%%a.%%b.%%c.%%d
+            set no-ip=0
+        )
+    ) else (
+        for /f "tokens=4,5,6,7 delims=.: " %%a in (
+            'ipconfig^
+                ^| findstr "IPv4"^
+                ^| findstr /n ".*"^
+                ^| sort /reverse^
+                ^| findstr /n ".*"^
+                ^| findstr "^%~2"'
+        ) do (
+            set host=%%a.%%b.%%c.%%d
+            set no-ip=0
+        )
     )
   
     exit /b %no-ip%
