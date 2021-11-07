@@ -1,1 +1,1 @@
-asprun.bat -text
+asprun.bat text eol=crlf
