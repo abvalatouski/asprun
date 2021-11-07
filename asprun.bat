@@ -253,7 +253,7 @@ rem IN THE SOFTWARE.
 
 :update-self (
     set self-url=https://raw.githubusercontent.com/
-    set self-url=%self-url%/abvalatouski/asprun/master/asprun.batc
+    set self-url=%self-url%/abvalatouski/asprun/master/asprun.bat
 
     >nul 2>&1 powershell -c "Invoke-WebRequest -Outfile %~1 -Uri %self-url%"
     if not "%errorlevel%" == "0" (
