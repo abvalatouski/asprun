@@ -1,6 +1,6 @@
 @ echo off
 
-rem Copyright © 2021 Aliaksei Valatouski <abvalatouski@gmail.com>
+rem Copyright © 2021 Aliaksei Valatouski ^<abvalatouski@gmail.com^>
 rem
 rem Permission is hereby granted, free of charge, to any person obtaining a copy
 rem of this software and associated documentation files (the “Software”),
@@ -304,47 +304,79 @@ rem IN THE SOFTWARE.
 )
 
 :build-project (
-    set has-errors=0
+    rem `for` does not work properly when MSBuild properties are specified.
+    call :generate-temporary-file-name build-output dotnet. .build
+    >%build-output% dotnet build %project%^
+        --configuration=%build-configuration%^
+        --nologo^
+        --verbosity=quiet^
+        -property:WarningLevel=0
+    if not "!errorlevel!" == "0" (
+        call :parse-compiler-errors %build-output%
+        del %build-output%
+        exit /b 1
+    )
 
-    for /f "tokens=*" %%a in (
-        'dotnet build %project%^
-                --configuration=%build-configuration%^
-                --nologo^
-                --verbosity=quiet^
-                -p:WarningLevel=0^
-            ^| findstr "^.:"^
-            ^| sort /unique'
-    ) do (
-        if "!has-errors!" == "1" (
+    del %build-output%
+    exit /b
+)
+
+:parse-compiler-errors (
+    setlocal
+    set parsed-at-least-one-error=0
+
+    rem All the errors begin with a fully qualified filepath
+    rem and may be duplicated.
+    for /f "tokens=*" %%a in ('type %~1 ^| findstr "^.:" ^| sort /unique') do (
+        if "!parsed-at-least-one-error!" == "1" (
             >&2 echo.
         )
 
         set error=%%a
-        set has-errors=1
+        set parsed-at-least-one-error=1
 
-        rem Escaping some characters to split the error message, using them
-        rem as delimiters.
-        set error=!error:":"=^<quoted-colon^>!
-        set error=!error:"["=^<quoted-bracket^>!
+        rem Passing variable name to avoid quoting problems.
+        call :parse-compiler-error error
+    )
 
-        for /f "tokens=1,2,3,4 delims=:[" %%a in ("!error!") do (
-            for /f "tokens=1,2,3,4,5,6 delims=:,() " %%a in ("%%a:%%b:%%c") do (
-                >&2 echo %%a:%%b:%%c:%%d: %%e %%f:
-            )
+    endlocal
+    exit /b
+)
 
-            for /f "tokens=*" %%a in ("%%d") do (
-                set message=%%a
+:parse-compiler-error (
+    setlocal
+    set error=!%~1!
 
-                rem Unescaping.
-                set message=!message:^<quoted-colon^>=":"!
-                set message=!message:^<quoted-bracket^>="["!
+    rem Escaping some characters to split the error message, using them
+    rem as delimiters.
+    set error=!error:":"=^<quoted-colon^>!
+    set error=!error:"["=^<quoted-bracket^>!
 
-                >&2 echo !message!
-            )
+    rem The format of the error message is following:
+    rem {drive}:{path}:({line},{column}): error {code}: {message} [{csproj}]
+    for /f "tokens=1,2,3,4 delims=:[" %%a in ("!error!") do (
+        for /f "tokens=1,2,3,4,6 delims=:,() " %%a in ("%%a:%%b:%%c") do (
+            >&2 echo %%a:%%b:%%c:%%d: error %%e:
+        )
+
+        call :trim-spaces-around-arguments error %%d
+
+        rem Unescaping.
+        set error=!error:^<quoted-colon^>=":"!
+        set error=!error:^<quoted-bracket^>="["!
+        
+        <nul >&2 set /p=!error!
+        if not "!error:~-1!" == "." (
+            rem For visual consistency.
+            rem Some errors are not ended with a period.
+            >&2 echo .
+        ) else (
+            >&2 echo.
         )
     )
 
-    exit /b %has-errors%
+    endlocal
+    exit /b
 )
 
 :lookup-ip-config (
@@ -375,4 +407,22 @@ rem IN THE SOFTWARE.
     )
 
     exit /b %no-ip%
+)
+
+:generate-temporary-file-name (
+    set temporary-file-name=%~2%random%%~3
+    if exist "%temporary-file-name%" (
+        goto :generate-temporary-file-name
+    )
+
+    set "%~1=%temporary-file-name%"
+    exit /b
+)
+
+:trim-spaces-around-arguments (
+    for /f "tokens=1*" %%a in ("%*") do (
+        set "%%a=%%b"
+    )
+
+    exit /b
 )
