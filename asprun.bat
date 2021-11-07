@@ -257,8 +257,8 @@ rem IN THE SOFTWARE.
 
     >nul 2>&1 powershell -c "Invoke-WebRequest -Outfile %~1 -Uri %self-url%"
     if not "%errorlevel%" == "0" (
-        >&2 echo Can't download the source code. Try to do it yourself at:
-        >&2 echo %self-url%
+        >&2 echo Can't download the source code. Try to do it yourself
+        >&2 echo at '%self-url%'.
         exit /b 1
     )
 
