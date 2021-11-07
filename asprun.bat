@@ -296,7 +296,7 @@ rem IN THE SOFTWARE.
 )
 
 :run-project (
-    call :build-project
+    call :build-project "%project%" "%build-configuration%"
     if not "!errorlevel!" == "0" (
         exit /b 1
     )
@@ -336,11 +336,12 @@ rem IN THE SOFTWARE.
 :build-project (
     rem `for` does not work properly when MSBuild properties are specified.
     call :generate-temporary-file-name build-output dotnet. .build
-    >%build-output% dotnet build %project%^
-        --configuration=%build-configuration%^
+    >%build-output% dotnet build "%~1"^
+        --configuration="%~2"^
         --nologo^
         --verbosity=quiet^
         -property:WarningLevel=0
+
     if not "!errorlevel!" == "0" (
         call :print-compiler-errors %build-output%
         del %build-output%
@@ -374,66 +375,33 @@ rem IN THE SOFTWARE.
 :print-compiler-error (
     setlocal
 
-    rem The format of the error message is following:
-    rem {drive}:{path}({line},{column}): error {code}: {message} [{csproj}]
     set error=!%~1!
 
-    call :escape-compiler-error-delimiters error
-    for /f "tokens=1,2,3,4 delims=:[" %%a in ("!error!") do (
-        call :print-compiler-error-header "%%a" "%%b" "%%c"
-
-        call :trim-spaces-around-arguments error %%d
-        call :unescape-compiler-error-delimiters error
-        call :print-compiler-error-message "!error!"
-    )
-
-    endlocal
-    exit /b
-)
-
-:print-compiler-error-header (
-    for /f "tokens=1,2,3,4,6 delims=:,() " %%a in ("%~1:%~2:%~3") do (
-        >&2 echo %%a:%%b:%%c:%%d: error %%e:
-    )
-
-    exit /b
-)
-
-:escape-compiler-error-delimiters (
-    setlocal
-
-    set error=!%~1!
+    rem Escaping some characters to use them as delimiters.
     set error=!error:":"=^<quoted-colon^>!
     set error=!error:"["=^<quoted-bracket^>!
 
-    endlocal
-    set "%~1=%error%"
-    exit /b
-)
+    rem The format of the error message is following:
+    rem {drive}:{path}({line},{column}): error {code}: {message} [{csproj}]
+    for /f "tokens=1,2,3,4 delims=:[" %%a in ("!error!") do (
+        for /f "tokens=1,2,3,4,6 delims=:,() " %%a in ("%%a:%%b:%%c") do (
+            >&2 echo %%a:%%b:%%c:%%d: error %%e:
+        )
 
-:unescape-compiler-error-delimiters (
-    setlocal
+        call :trim-spaces-around-arguments error %%d
 
-    set error=!%~1!
-    set error=!error:^<quoted-colon^>=":"!
-    set error=!error:^<quoted-bracket^>="["!
+        rem Unescaping.
+        set error=!error:^<quoted-colon^>=":"!
+        set error=!error:^<quoted-bracket^>="["!
 
-    endlocal
-    set "%~1=%error%"
-    exit /b
-)
-
-:print-compiler-error-message (
-    setlocal
-
-    set error=%~1
-    <nul >&2 set/p=%error%
-    if not "!error:~-1!" == "." (
-        rem For visual consistency.
-        rem Some errors are not ended with a period.
-        >&2 echo..
-    ) else (
-        >&2 echo.
+        <nul >&2 set/p=!error!
+        if not "!error:~-1!" == "." (
+            rem For visual consistency.
+            rem Some errors are not ended with a period.
+            >&2 echo..
+        ) else (
+            >&2 echo.
+        )
     )
 
     endlocal
