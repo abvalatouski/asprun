@@ -1,17 +1,17 @@
 @ echo off
 
 rem Copyright © 2021 Aliaksei Valatouski <abvalatouski@gmail.com>
-rem 
+rem
 rem Permission is hereby granted, free of charge, to any person obtaining a copy
 rem of this software and associated documentation files (the “Software”),
 rem to deal in the Software without restriction, including without limitation
 rem the rights to use, copy, modify, merge, publish, distribute, sublicense,
 rem and/or sell copies of the Software, and to permit persons to whom
 rem the Software is furnished to do so, subject to the following conditions:
-rem 
+rem
 rem The above copyright notice and this permission notice shall be included
 rem in all copies or substantial portions of the Software.
-rem 
+rem
 rem THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS
 rem OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 rem FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -227,7 +227,7 @@ rem IN THE SOFTWARE.
                 "The project folder '%0' does not exist."
             endlocal
             exit /b 1
-        )   
+        )
 
         set project=%0
         shift
@@ -269,7 +269,7 @@ rem IN THE SOFTWARE.
     call :build-project
     if not errorlevel 0 (
         exit /b 1
-    ) 
+    )
 
     set url=%protocol%://!host!:%port%
     start /b dotnet run^
@@ -382,6 +382,6 @@ rem IN THE SOFTWARE.
             set no-ip=0
         )
     )
-  
+
     exit /b %no-ip%
 )
