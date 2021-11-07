@@ -251,6 +251,36 @@ rem IN THE SOFTWARE.
     exit /b
 )
 
+:lookup-ip-config (
+    set no-ip=1
+
+    if "%~1" == "0" (
+        for /f "tokens=3,4,5,6 delims=.: " %%a in (
+            'ipconfig^
+                ^| findstr "IPv4"^
+                ^| findstr /n ".*"^
+                ^| findstr "^%~2"'
+        ) do (
+            set host=%%a.%%b.%%c.%%d
+            set no-ip=0
+        )
+    ) else (
+        for /f "tokens=4,5,6,7 delims=.: " %%a in (
+            'ipconfig^
+                ^| findstr "IPv4"^
+                ^| findstr /n ".*"^
+                ^| sort /reverse^
+                ^| findstr /n ".*"^
+                ^| findstr "^%~2"'
+        ) do (
+            set host=%%a.%%b.%%c.%%d
+            set no-ip=0
+        )
+    )
+
+    exit /b %no-ip%
+)
+
 :update-self (
     set self-url=https://raw.githubusercontent.com/
     set self-url=%self-url%/abvalatouski/asprun/master/asprun.bat
@@ -312,7 +342,7 @@ rem IN THE SOFTWARE.
         --verbosity=quiet^
         -property:WarningLevel=0
     if not "!errorlevel!" == "0" (
-        call :parse-compiler-errors %build-output%
+        call :print-compiler-errors %build-output%
         del %build-output%
         exit /b 1
     )
@@ -321,101 +351,101 @@ rem IN THE SOFTWARE.
     exit /b
 )
 
-:parse-compiler-errors (
+:print-compiler-errors (
     setlocal
-    set parsed-at-least-one-error=0
 
-    rem All the errors begin with a fully qualified filepath
+    rem All the errors begin with a filepath (including a drive letter)
     rem and may be duplicated.
+    set printed-at-least-one-error=0
     for /f "tokens=*" %%a in ('type %~1 ^| findstr "^.:" ^| sort /unique') do (
-        if "!parsed-at-least-one-error!" == "1" (
+        if "!printed-at-least-one-error!" == "1" (
             >&2 echo.
         )
 
         set error=%%a
-        set parsed-at-least-one-error=1
-
-        rem Passing variable name to avoid quoting problems.
-        call :parse-compiler-error error
+        set printed-at-least-one-error=1
+        call :print-compiler-error error
     )
 
     endlocal
     exit /b
 )
 
-:parse-compiler-error (
+:print-compiler-error (
     setlocal
+
+    rem The format of the error message is following:
+    rem {drive}:{path}({line},{column}): error {code}: {message} [{csproj}]
     set error=!%~1!
 
-    rem Escaping some characters to split the error message, using them
-    rem as delimiters.
+    call :escape-compiler-error-delimiters error
+    for /f "tokens=1,2,3,4 delims=:[" %%a in ("!error!") do (
+        call :print-compiler-error-header "%%a" "%%b" "%%c"
+
+        call :trim-spaces-around-arguments error %%d
+        call :unescape-compiler-error-delimiters error
+        call :print-compiler-error-message "!error!"
+    )
+
+    endlocal
+    exit /b
+)
+
+:print-compiler-error-header (
+    for /f "tokens=1,2,3,4,6 delims=:,() " %%a in ("%~1:%~2:%~3") do (
+        >&2 echo %%a:%%b:%%c:%%d: error %%e:
+    )
+
+    exit /b
+)
+
+:escape-compiler-error-delimiters (
+    setlocal
+
+    set error=!%~1!
     set error=!error:":"=^<quoted-colon^>!
     set error=!error:"["=^<quoted-bracket^>!
 
-    rem The format of the error message is following:
-    rem {drive}:{path}:({line},{column}): error {code}: {message} [{csproj}]
-    for /f "tokens=1,2,3,4 delims=:[" %%a in ("!error!") do (
-        for /f "tokens=1,2,3,4,6 delims=:,() " %%a in ("%%a:%%b:%%c") do (
-            >&2 echo %%a:%%b:%%c:%%d: error %%e:
-        )
+    endlocal
+    set "%~1=%error%"
+    exit /b
+)
 
-        call :trim-spaces-around-arguments error %%d
+:unescape-compiler-error-delimiters (
+    setlocal
 
-        rem Unescaping.
-        set error=!error:^<quoted-colon^>=":"!
-        set error=!error:^<quoted-bracket^>="["!
-        
-        <nul >&2 set /p=!error!
-        if not "!error:~-1!" == "." (
-            rem For visual consistency.
-            rem Some errors are not ended with a period.
-            >&2 echo .
-        ) else (
-            >&2 echo.
-        )
+    set error=!%~1!
+    set error=!error:^<quoted-colon^>=":"!
+    set error=!error:^<quoted-bracket^>="["!
+
+    endlocal
+    set "%~1=%error%"
+    exit /b
+)
+
+:print-compiler-error-message (
+    setlocal
+
+    set error=%~1
+    <nul >&2 set/p=%error%
+    if not "!error:~-1!" == "." (
+        rem For visual consistency.
+        rem Some errors are not ended with a period.
+        >&2 echo..
+    ) else (
+        >&2 echo.
     )
 
     endlocal
     exit /b
 )
 
-:lookup-ip-config (
-    set no-ip=1
-
-    if "%~1" == "0" (
-        for /f "tokens=3,4,5,6 delims=.: " %%a in (
-            'ipconfig^
-                ^| findstr "IPv4"^
-                ^| findstr /n ".*"^
-                ^| findstr "^%~2"'
-        ) do (
-            set host=%%a.%%b.%%c.%%d
-            set no-ip=0
-        )
-    ) else (
-        for /f "tokens=4,5,6,7 delims=.: " %%a in (
-            'ipconfig^
-                ^| findstr "IPv4"^
-                ^| findstr /n ".*"^
-                ^| sort /reverse^
-                ^| findstr /n ".*"^
-                ^| findstr "^%~2"'
-        ) do (
-            set host=%%a.%%b.%%c.%%d
-            set no-ip=0
-        )
-    )
-
-    exit /b %no-ip%
-)
-
 :generate-temporary-file-name (
-    set temporary-file-name=%~2%random%%~3
-    if exist "%temporary-file-name%" (
+    set "%~1=%~2%random%%~3"
+    if exist "!%~1!" (
         goto :generate-temporary-file-name
     )
 
-    set "%~1=%temporary-file-name%"
     exit /b
 )
 
