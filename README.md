@@ -3,7 +3,7 @@
 Download the script with:
 
 ```console
-powershell -c "Invoke-WebRequest -Outfile asprun.bat -Uri https://raw.githubusercontent.com/abvalatouski/vsless/master/asprun.bat"
+powershell -c "Invoke-WebRequest -Outfile asprun.bat -Uri https://raw.githubusercontent.com/abvalatouski/asprun/master/asprun.bat"
 ```
 
 Shortened help message:
@@ -13,12 +13,16 @@ Runs the ASP.NET project at the specified port and prints its URL.
 The launched process can be stopped via 'taskkill /f /im project.exe',
 if its name matches name of the project.
 
-    asprun project [/?] [/c build-configuration] [/h host] [/i] [/o] [/p port]
-        [/q] [/s] [/w]
+    asprun project [/?] [//] [/c build-configuration] [/h host] [/i] [/o]
+        [/p port] [/q] [/s] [/w]
 
 Options
 
     project                 Path to the project's folder.
+
+    //                      Update the command, fetching its source code
+                            from the Internet.
+                            Other options will be ignored.
 
     /c build-configuration  Either Debug or Release.
                             Defaulted to "Debug".

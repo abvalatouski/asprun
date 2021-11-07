@@ -34,14 +34,18 @@ rem IN THE SOFTWARE.
     echo The launched process can be stopped via 'taskkill /f /im project.exe',
     echo if its name matches name of the project.
     echo.
-    echo     %~n1 project [/?] [/c build-configuration] [/h host] [/i] [/o] [/p port]
-    echo         [/q] [/s] [/w]
+    echo     %~n1 project [/?] [//] [/c build-configuration] [/h host] [/i] [/o]
+    echo         [/ port] [/q] [/s] [/w]
     echo.
     echo Options
     echo.
     echo     project                 Path to the project's folder.
     echo.
     echo.    /?                      Show this help message.
+    echo                             Other options will be ignored.
+    echo.
+    echo     //                      Update the command, fetching its source code
+    echo                             from the Internet.
     echo                             Other options will be ignored.
     echo.
     echo     /c build-configuration  Either Debug or Release.
@@ -123,6 +127,10 @@ rem IN THE SOFTWARE.
         call :usage %command%
         endlocal
         exit /b
+    ) else if "%0" == "//" (
+        call :update-self %command%
+        endlocal
+        exit /b %errorlevel%
     ) else if /i "%0" == "/c" (
         if "%1" == "" (
             call :option-error^
@@ -240,6 +248,20 @@ rem IN THE SOFTWARE.
 :option-error (
     >&2 echo %~2
     >&2 echo See '%~n1 /? ^| more'.
+    exit /b
+)
+
+:update-self (
+    set self-url=https://raw.githubusercontent.com/
+    set self-url=%self-url%/abvalatouski/asprun/master/asprun.batc
+
+    >nul 2>&1 powershell -c "Invoke-WebRequest -Outfile %~1 -Uri %self-url%"
+    if not "%errorlevel%" == "0" (
+        >&2 echo Can't download the source code. Try to do it yourself at:
+        >&2 echo %self-url%
+        exit /b 1
+    )
+
     exit /b
 )
 
