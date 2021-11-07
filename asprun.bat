@@ -26,7 +26,7 @@ rem IN THE SOFTWARE.
 :options-were-parsed
     call :run-project
     endlocal
-    exit /b %errorlevel%
+    exit /b !errorlevel!
 )
 
 :usage (
@@ -130,7 +130,7 @@ rem IN THE SOFTWARE.
     ) else if "%0" == "//" (
         call :update-self %command%
         endlocal
-        exit /b %errorlevel%
+        exit /b !errorlevel!
     ) else if /i "%0" == "/c" (
         if "%1" == "" (
             call :option-error^
@@ -256,7 +256,7 @@ rem IN THE SOFTWARE.
     set self-url=%self-url%/abvalatouski/asprun/master/asprun.bat
 
     >nul 2>&1 powershell -c "Invoke-WebRequest -Outfile %~1 -Uri %self-url%"
-    if not "%errorlevel%" == "0" (
+    if not "!errorlevel!" == "0" (
         >&2 echo Can't download the source code. Try to do it yourself
         >&2 echo at '%self-url%'.
         exit /b 1
@@ -267,7 +267,7 @@ rem IN THE SOFTWARE.
 
 :run-project (
     call :build-project
-    if not errorlevel 0 (
+    if not "!errorlevel!" == "0" (
         exit /b 1
     )
 
@@ -311,44 +311,35 @@ rem IN THE SOFTWARE.
                 --configuration=%build-configuration%^
                 --nologo^
                 --verbosity=quiet^
+                -p:WarningLevel=0^
             ^| findstr "^.:"^
             ^| sort /unique'
     ) do (
-        set message=%%a
+        if "!has-errors!" == "1" (
+            >&2 echo.
+        )
+
+        set error=%%a
+        set has-errors=1
 
         rem Escaping some characters to split the error message, using them
         rem as delimiters.
-        set message=!message:":"=^<quoted-colon^>!
-        set message=!message:"["=^<quoted-bracket^>!
+        set error=!error:":"=^<quoted-colon^>!
+        set error=!error:"["=^<quoted-bracket^>!
 
-        for /f "tokens=1,2,3,4 delims=:[" %%a in ("!message!") do (
-            set is-error=0
-
+        for /f "tokens=1,2,3,4 delims=:[" %%a in ("!error!") do (
             for /f "tokens=1,2,3,4,5,6 delims=:,() " %%a in ("%%a:%%b:%%c") do (
-                if "%%e" == "error" (
-                    set is-error=1
-                    set has-errors=1
-                )
-
-                if "!is-error!" == "1" (
-                    if "!has-errors!" == "1" (
-                        >&2 echo.
-                    )
-
-                    >&2 echo %%a:%%b:%%c:%%d: %%e %%f:
-                )
+                >&2 echo %%a:%%b:%%c:%%d: %%e %%f:
             )
 
             for /f "tokens=*" %%a in ("%%d") do (
-                if "!is-error!" == "1" (
-                    set message=%%a
+                set message=%%a
 
-                    rem Unescaping.
-                    set message=!message:^<quoted-colon^>=":"!
-                    set message=!message:^<quoted-bracket^>="["!
+                rem Unescaping.
+                set message=!message:^<quoted-colon^>=":"!
+                set message=!message:^<quoted-bracket^>="["!
 
-                    >&2 echo !message!
-                )
+                >&2 echo !message!
             )
         )
     )
