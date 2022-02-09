@@ -1,6 +1,6 @@
 @ echo off
 
-rem Copyright © 2021 Aliaksei Valatouski ^<abvalatouski@gmail.com^>
+rem Copyright © 2022 Aliaksei Valatouski ^<abvalatouski@gmail.com^>
 rem
 rem Permission is hereby granted, free of charge, to any person obtaining a copy
 rem of this software and associated documentation files (the “Software”),
