@@ -1,9 +1,0 @@
-C:\Users\Admin\Desktop\asprun\WeatherForecast\Program.cs(19,23): error CS1519: Недопустимый токен ":" в объявлении класса, записи, структуры или элемента интерфейса [C:\Users\Admin\Desktop\asprun\WeatherForecast\WeatherForecast.csproj]
-
-Ошибка сборки.
-
-C:\Users\Admin\Desktop\asprun\WeatherForecast\Program.cs(19,23): error CS1519: Недопустимый токен ":" в объявлении класса, записи, структуры или элемента интерфейса [C:\Users\Admin\Desktop\asprun\WeatherForecast\WeatherForecast.csproj]
-    Предупреждений: 0
-    Ошибок: 1
-
-Прошло времени 00:00:00.96
