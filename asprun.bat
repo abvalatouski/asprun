@@ -25,7 +25,6 @@ rem.IN THE SOFTWARE.
     goto :parse-options
 :options-were-parsed
     call :run-project
-    endlocal
     exit /b !errorlevel!
 )
 
