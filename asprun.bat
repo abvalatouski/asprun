@@ -70,7 +70,7 @@ rem.IN THE SOFTWARE.
     echo.                            ================
     echo.                            Mnemonic: quiet.
     echo.
-    echo.    /s                      Print URL of Swagger UI.
+    echo.    /s                      Use URL of Swagger UI.
     echo.
     echo.    /w                      Wait pressing any key to stop the project.
     echo.

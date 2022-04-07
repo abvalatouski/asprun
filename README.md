@@ -46,7 +46,7 @@ Options
                             ================
                             Mnemonic: quiet.
 
-    /s                      Print URL of Swagger UI.
+    /s                      Use URL of Swagger UI.
 
     /w                      Wait pressing any key to stop the project.
 
